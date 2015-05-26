@@ -8,18 +8,18 @@ The easiest way to get started with this starter project is to fork, clone or do
 
 	git clone https://github.com/markramach/spring-boot-starter-consul.git  
 	
-You will also need to install [Consul](https://www.consul.io/intro/getting-started/install.html) and this starter project assumes that you have a basic understanding of Consul's key-value management operations.
+You will also need to install [Consul](https://www.consul.io/intro/getting-started/install.html). This starter project assumes that you have a basic understanding of Consul's key-value management operations.
 
 ### Spring Boot Auto Configuration
 
-If you're developing a Spring Boot application, you can have properties injected into the application context during the bootstrap phase of the application startup. Injecting properties at this point allows you to leverage many of the features that were recently released from the [Spring Cloud Config](http://projects.spring.io/spring-cloud/) project. This includes the ability to refresh your properties at any point during the application lifecycle using the predefined `/refresh` endpoint and the `@RefreshScope` annotation.
+If you're developing a Spring Boot application, you can have properties injected into the application context during the bootstrap phase of application startup. Injecting properties at this point allows you to leverage many of the features that were recently released from the [Spring Cloud Config](http://projects.spring.io/spring-cloud/) project. This includes the ability to refresh your properties at any point during the application lifecycle using the predefined `/refresh` endpoint and the `@RefreshScope` annotation.
 
-This starter project has a `ConsulBootstrapConfiguration` class configured in the `META-INF/spring.factories` file that indicates certain beans need to be configured on startup. While bean configuration is automatic, it can be disabled using an environment variable or a bootstrap.yml file like the following.
+This starter project has a `ConsulBootstrapConfiguration` class configured in the `META-INF/spring.factories` file that indicates certain beans need to be configured on startup. While bean configuration is automatic, it can be disabled using an environment variable or a bootstrap.yml file like the following:
 
 	consul:
 	  enabled: false
 	  
-The bootstrap configuration creates 3 components needed to fetch configuration from Consul. `ConsulProperties`, `ConsulAdapter` as well as a `ConsulPropertySourceLocator`. This last locator class implements a Spring Boot `PropertySourceLocator` interface that is automatically detected by the cloud configuration components and makes the property source available to the application context.
+The bootstrap configuration creates three components needed to fetch configuration from Consul. `ConsulProperties`, `ConsulAdapter` as well as a `ConsulPropertySourceLocator`. This last locator class implements a Spring Boot `PropertySourceLocator` interface that is automatically detected by the cloud configuration components and makes the property source available to the application context.
 
 Because the bootstrap components are auto-configured, there is no additional code that needs to be written. However, there are a couple of configuration items that you will want to set for yourself. The first is the Consul services endpoint. By default the endpoint is set to `http://localhost:8500/v1`. You can update this using the bootstrap.yml file.
 
@@ -47,9 +47,9 @@ After configuration is complete, you should be able to inject the Consul propert
 
 I also strongly encourage you to take a look at the [Spring Cloud Consul](https://github.com/spring-cloud/spring-cloud-consul) project. This is a brand new project from Spring that includes configuration as well as service registration and discovery. The project has just tagged the first milestone release.
 
-### Non Boot Configuration
+### Non-Boot Configuration
 
-If you are not using Spring Boot, you can still leverage Consul based property injection with the `@EnableConsulPropertySource` annotation in this starter project. Simple annotate your configuration class with the enable annotation and set the `paths` attribute of the annotation.
+If you are not using Spring Boot, you can still leverage Consul based property injection with the `@EnableConsulPropertySource` annotation in this starter project. Simply annotate your configuration class with the enable annotation and set the `paths` attribute of the annotation.
 
 	@Configuration
 	@EnableConsulPropertySource({"root/api/defaults", "root/global/defaults"})
