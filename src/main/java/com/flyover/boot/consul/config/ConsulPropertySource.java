@@ -30,7 +30,7 @@ public class ConsulPropertySource extends EnumerablePropertySource<Map<String, O
             
             configuration.getPaths().stream()
                 .map(p -> consulAdapter.get(p, true))
-                    .reduce(new LinkedHashMap<String, Object>(), (l, r) -> {l.putAll(r); return r;})
+                    .reduce(new LinkedHashMap<String, Object>(), (l, r) -> {l.putAll(r); return l;})
                         .entrySet().forEach(this::setProperty);
             
         } catch (RuntimeException e) {

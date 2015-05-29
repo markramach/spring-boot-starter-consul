@@ -4,6 +4,7 @@
 package com.flyover.boot.consul.config;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
@@ -22,6 +23,7 @@ import org.springframework.core.env.StandardEnvironment;
  * @author mramach
  *
  */
+@SuppressWarnings("unchecked")
 @RunWith(MockitoJUnitRunner.class)
 public class ConsulPropertySourceLocatorTest {
 
@@ -35,12 +37,11 @@ public class ConsulPropertySourceLocatorTest {
     @Test
     public void testLocate() {
 
-        String path = "path/to/property";
+        configuration.setPaths(Arrays.asList("path/to/property", "path/to/another/property"));
         
-        configuration.setPaths(Arrays.asList(path));
-        
-        when(consulAdapter.get(eq(path), eq(true)))
-            .thenReturn(Collections.singletonMap("hello", "world"));
+        when(consulAdapter.get(isA(String.class), eq(true))).thenReturn(
+                Collections.singletonMap("hello", "world"), 
+                Collections.singletonMap("hello_again", "world"));
         
         PropertySource<?> propertySource = locator.locate(new StandardEnvironment());
         
@@ -51,6 +52,12 @@ public class ConsulPropertySourceLocatorTest {
         
         assertEquals("Checking that the property source contains the expected value.", 
                 "world", propertySource.getProperty("hello"));
+        
+        assertTrue("Checking that the property source contains a property.", 
+                propertySource.containsProperty("hello_again"));
+        
+        assertEquals("Checking that the property source contains the expected value.", 
+                "world", propertySource.getProperty("hello_again"));
         
     }
 
