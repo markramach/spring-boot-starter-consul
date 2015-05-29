@@ -5,6 +5,7 @@ package com.flyover.boot.consul.config;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -27,8 +28,10 @@ public class ConsulPropertySource extends EnumerablePropertySource<Map<String, O
         
         try {
             
-            configuration.getPaths().forEach(p -> consulAdapter.get(p, true)
-                    .entrySet().forEach(e -> source.put(pathToProperty(e.getKey()), e.getValue())));
+            configuration.getPaths().stream()
+                .map(p -> consulAdapter.get(p, true))
+                    .reduce(new LinkedHashMap<String, Object>(), (l, r) -> {l.putAll(r); return r;})
+                        .entrySet().forEach(this::setProperty);
             
         } catch (RuntimeException e) {
             
@@ -40,6 +43,10 @@ public class ConsulPropertySource extends EnumerablePropertySource<Map<String, O
             
         }
         
+    }
+
+    private Object setProperty(Entry<String, Object> e) {
+        return source.put(pathToProperty(e.getKey()), e.getValue());
     }
     
     private String pathToProperty(String path) {
